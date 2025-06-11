@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Para o Amor da Minha Vida ❤️</title>
+  <style>
+    body {
+      background-color: #2b2b4f;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      text-align: center;
+      color: #ffccd5;
+    }
+
+    .heart {
+      font-size: 150px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      color: #ff4d6d;
+    }
+
+    .heart:hover {
+      transform: scale(1.2);
+    }
+
+    .message {
+      font-size: 32px;
+      color: #ffc6d0;
+      margin-top: 20px;
+    }
+
+    .quiz, .gallery, #loveLetter, #finalChoice, #finalMessage {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      max-width: 500px;
+      padding: 20px;
+      background: #3d3d72;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      color: #ffe2e8;
+      margin-top: 20px;
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .options button, .choice button, .start-quiz-btn {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      background-color: #ff6f91;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .options button:hover, .choice button:hover, .start-quiz-btn:hover {
+      background-color: #ff3366;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #ffd6e0;
+    }
+
+    .gallery img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .gallery .nav {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="intro">
+    <div class="heart">❤️</div>
+    <div class="message">Eu te amo Minha xurubinha (:</div>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <img id="galleryImage" src="" alt="Memória juntos">
+    <div class="nav">
+      <button onclick="prevImage()">⬅️</button>
+      <button onclick="nextImage()">➡️</button>
+    </div>
+    <button class="start-quiz-btn" onclick="startQuiz()">Iniciar Quiz</button>
+  </div>
+
+  <div id="quiz" class="quiz"></div>
+
+  <div id="finalChoice" class="quiz">
+    <div class="message">Escolha um Ticket 🎁</div>
+    <div class="choice">
+      <button onclick="selectGift('Dia de passeio em Buzios até o por do sol 🏖️')">Dia de passeio em Buzios até o por do sol 🏖️</button>
+      <button onclick="selectGift('Jantar Romantico em Lugar de sua escolha 🍽️')">Jantar Romantico em Lugar de sua escolha 🍽️</button>
+      <button onclick="selectGift('Camas elasticas + dia no shopping 🛍️')">Camas elasticas + dia no shopping 🛍️</button>
+    </div>
+  </div>
+
+  <div id="finalMessage" class="quiz">
+    <div class="result">🎫 Ticket pego com sucesso!</div>
+    <button onclick="showLoveLetter()">Ler uma mensagem secreta 💌</button>
+  </div>
+
+  <div id="loveLetter"></div>
+
+  <audio id="bgMusic" src="Musicas/A Resposta.mp3" loop></audio>
+  <button onclick="toggleMusic()">🎶 Música</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const quizData = [
+      {
+        question: "Qual é a minha comida favorita?",
+        options: ["Pizza", "Lasanha", "Sushi", "Hambúrguer"],
+        answer: "Sushi"
+      },
+      {
+        question: "Onde foi nosso primeiro beijo?",
+        options: ["Cinema", "Praia", "No carro", "Na sua casa"],
+        answer: "Cinema"
+      },
+      {
+        question: "Qual é o meu maior medo?",
+        options: ["Altura", "CLT", "Não viver", "Aranhas"],
+        answer: "Não viver"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+      
+    function startQuiz() {
+      document.getElementById('gallery').style.display = 'none';
+      document.getElementById('quiz').style.display = 'flex';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const quizContainer = document.getElementById('quiz');
+      const q = quizData[currentQuestion];
+      quizContainer.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <button onclick="selectAnswer('${opt}')">${opt}</button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectAnswer(selected) {
+      if (selected === quizData[currentQuestion].answer) {
+        score++;
+      }
+      currentQuestion++;
+
+      if (currentQuestion < quizData.length) {
+        showQuestion();
+      } else {
+        showFinalChoice();
+      }
+    }
+
+    const galleryImages = [
+      "imagens/img1.jpg",
+      "imagens/img2.jpg",
+      "imagens/img3.jpg"
+    ];
+    let currentImage = 0;
+
+    window.onload = function() {
+      document.getElementById('gallery').style.display = 'flex';
+      document.getElementById('galleryImage').src = galleryImages[currentImage];
+    }
+
+    function nextImage() {
+      if (currentImage < galleryImages.length - 1) {
+        currentImage++;
+      } else {
+        currentImage = 0;
+      }
+      document.getElementById('galleryImage').src = galleryImages[currentImage];
+    }
+
+    function prevImage() {
+      if (currentImage > 0) {
+        currentImage--;
+      } else {
+        currentImage = galleryImages.length - 1;
+      }
+      document.getElementById('galleryImage').src = galleryImages[currentImage];
+    }
+
+    function showFinalChoice() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('finalChoice').style.display = 'flex';
+    }
+
+    function selectGift(option) {
+      document.getElementById('finalChoice').style.display = 'none';
+      document.getElementById('finalMessage').style.display = 'flex';
+      launchConfetti();
+    }
+
+    function showLoveLetter() {
+      const text = "Desde que te conheci, tudo ficou mais colorido. Você é minha paz, meu caos bonito, minha escolha diária e quero dizer que você é a minha xurubinha linda cacheada, Perdão por não ter condições no momento mas o ticket é vitalício ok? Vai poder usar quando eu tiver um dinheirinho pra nós curtirmos. Te amo muito. 💖";
+      let i = 0;
+      const el = document.getElementById("loveLetter");
+      el.style.display = "block";
+      el.innerHTML = "";
+      const interval = setInterval(() => {
+        el.innerHTML += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 50);
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      music.paused ? music.play() : music.pause();
+    }
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+    }
+  </script>
+</body>
+</html>
